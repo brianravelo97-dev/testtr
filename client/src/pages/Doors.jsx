@@ -82,29 +82,28 @@ export default function Doors() {
           {doors.map((d) => (
             <div key={d.id} className="card flex flex-col p-5">
               <div className="flex items-start gap-3">
-                <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-blue-100 text-blue-600 dark:bg-blue-500/15 dark:text-blue-400"><DoorOpen size={22} /></div>
                 <div className="min-w-0 flex-1">
-                  <h3 className="truncate font-semibold">{d.name}</h3>
-                  <p className="flex items-center gap-1 truncate text-xs text-slate-500"><MapPin size={12} /> {d.location || 'Sin ubicación'}</p>
+                  <h3 className="truncate font-medium">{d.name}</h3>
+                  <p className="flex items-center gap-1 truncate text-xs text-neutral-500"><MapPin size={12} /> {d.location || 'Sin ubicación'}</p>
                 </div>
                 {can.write && (
                   <div className="flex shrink-0">
                     <button className="btn-ghost p-2" onClick={() => setEditing(d)} title="Editar"><Pencil size={16} /></button>
-                    <button className="btn-ghost p-2 text-red-600" onClick={() => remove(d)} title="Eliminar"><Trash2 size={16} /></button>
+                    <button className="btn-ghost p-2 hover:text-red-700" onClick={() => remove(d)} title="Eliminar"><Trash2 size={16} /></button>
                   </div>
                 )}
               </div>
               <div className="mt-4 space-y-2 text-sm">
                 <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-2 text-slate-500">{d.lock_type === 'fail_safe' ? <Unlock size={14} /> : <Lock size={14} />} Chapa</span>
-                  <Badge color={d.lock_type === 'fail_safe' ? 'yellow' : 'blue'}>{d.lock_type === 'fail_safe' ? 'Fail-safe' : 'Fail-secure'}</Badge>
+                  <span className="flex items-center gap-2 text-neutral-500">{d.lock_type === 'fail_safe' ? <Unlock size={14} /> : <Lock size={14} />} Chapa</span>
+                  <Badge>{d.lock_type === 'fail_safe' ? 'Fail-safe' : 'Fail-secure'}</Badge>
                 </div>
                 <div className="flex items-center justify-between">
-                  <span className="flex items-center gap-2 text-slate-500"><Cpu size={14} /> Dispositivo</span>
-                  {d.device_name ? <span className="flex items-center gap-2"><StatusDot online={d.device_status === 'online'} />{d.device_name} · R{d.relay_number}</span> : <span className="text-slate-400">Sin asignar</span>}
+                  <span className="flex items-center gap-2 text-neutral-500"><Cpu size={14} /> Dispositivo</span>
+                  {d.device_name ? <span className="flex items-center gap-2"><StatusDot online={d.device_status === 'online'} />{d.device_name} · R{d.relay_number}</span> : <span className="text-neutral-400">Sin asignar</span>}
                 </div>
-                <div className="flex items-center justify-between"><span className="text-slate-500">Apertura</span><span>{d.open_seconds} s</span></div>
-                <div className="flex items-center justify-between"><span className="text-slate-500">Grupos con acceso</span><span>{d.group_count}</span></div>
+                <div className="flex items-center justify-between"><span className="text-neutral-500">Apertura</span><span>{d.open_seconds} s</span></div>
+                <div className="flex items-center justify-between"><span className="text-neutral-500">Grupos con acceso</span><span>{d.group_count}</span></div>
               </div>
               {can.write && (
                 <button className="btn-primary mt-5 w-full" disabled={!d.device_id || requesting === d.id} onClick={() => startOpen(d)}>

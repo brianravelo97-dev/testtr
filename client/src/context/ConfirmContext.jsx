@@ -22,12 +22,10 @@ export function ConfirmProvider({ children }) {
         {state && (
           <div className="p-6">
             <div className="flex gap-4">
-              <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-full ${state.danger ? 'bg-red-100 text-red-600 dark:bg-red-500/15' : 'bg-blue-100 text-blue-600 dark:bg-blue-500/15'}`}>
-                <AlertTriangle size={20} />
-              </div>
+              <AlertTriangle size={20} className={`mt-0.5 shrink-0 ${state.danger ? 'text-red-700 dark:text-red-500' : 'text-neutral-500'}`} />
               <div>
                 <h3 className="text-base font-semibold">{state.title}</h3>
-                <p className="mt-1 text-sm text-slate-600 dark:text-slate-400">{state.message}</p>
+                <p className="mt-1 text-sm text-neutral-600 dark:text-neutral-400">{state.message}</p>
               </div>
             </div>
             <div className="mt-6 flex justify-end gap-2">

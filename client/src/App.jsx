@@ -28,7 +28,12 @@ function Toasts() {
   return (
     <Toaster position="top-right" toastOptions={{
       duration: 3500,
-      style: theme === 'dark' ? { background: '#1e293b', color: '#f1f5f9', border: '1px solid #334155' } : {},
+      style: {
+        borderRadius: 2, fontSize: 14, boxShadow: 'none',
+        ...(theme === 'dark' ? { background: '#171717', color: '#f5f5f5', border: '1px solid #404040' } : { background: '#fff', color: '#171717', border: '1px solid #d4d4d4' }),
+      },
+      success: { iconTheme: { primary: '#15803d', secondary: '#fff' } },
+      error: { iconTheme: { primary: '#b91c1c', secondary: '#fff' } },
     }} />
   );
 }

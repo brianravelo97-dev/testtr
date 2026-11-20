@@ -51,12 +51,12 @@ export default function Logs() {
     <>
       <PageHeader title="Registro de accesos" subtitle="Historial de intentos de acceso en todas las puertas"
         actions={<>
-          <button className="btn-secondary" onClick={() => exportFile('xlsx')} disabled={!!exporting}>{exporting === 'xlsx' ? <Spinner /> : <FileSpreadsheet size={16} className="text-emerald-600" />} Excel</button>
-          <button className="btn-secondary" onClick={() => exportFile('pdf')} disabled={!!exporting}>{exporting === 'pdf' ? <Spinner /> : <FileText size={16} className="text-red-600" />} PDF</button>
+          <button className="btn-secondary" onClick={() => exportFile('xlsx')} disabled={!!exporting}>{exporting === 'xlsx' ? <Spinner /> : <FileSpreadsheet size={16} />} Excel</button>
+          <button className="btn-secondary" onClick={() => exportFile('pdf')} disabled={!!exporting}>{exporting === 'pdf' ? <Spinner /> : <FileText size={16} />} PDF</button>
         </>} />
 
       <div className="card">
-        <div className="space-y-3 border-b border-slate-200 p-4 dark:border-slate-800">
+        <div className="space-y-3 border-b border-neutral-200 p-4 dark:border-neutral-800">
           <div className="flex gap-2">
             <SearchInput value={q} onChange={setQ} placeholder="Buscar persona, motivo o credencial…" className="flex-1" />
             <button className="btn-secondary lg:hidden" onClick={() => setShowFilters(!showFilters)}><Filter size={16} /></button>
@@ -84,34 +84,34 @@ export default function Logs() {
           <>
             <div className="hidden overflow-x-auto md:block">
               <table className="w-full">
-                <thead className="bg-slate-50 dark:bg-slate-800/50">
+                <thead>
                   <tr><th className="th">Fecha / hora</th><th className="th">Persona</th><th className="th">Puerta</th><th className="th">Método</th><th className="th">Resultado</th><th className="th">Motivo</th></tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                <tbody className="divide-y divide-neutral-100 dark:divide-neutral-800">
                   {data.data.map((l) => {
                     const Icon = METHOD_ICON[l.method];
                     return (
-                      <tr key={l.id} className={`hover:bg-slate-50 dark:hover:bg-slate-800/40 ${newIds.includes(l.id) ? 'flash' : ''}`}>
+                      <tr key={l.id} className={`hover:bg-neutral-50 dark:hover:bg-neutral-800/40 ${newIds.includes(l.id) ? 'flash' : ''}`}>
                         <td className="td whitespace-nowrap tabular-nums">{fmtDateTime(l.ts, true)}</td>
-                        <td className="td"><div className="flex items-center gap-2"><Avatar name={l.person_name || '?'} photo={l.photo} size={28} /><span className={l.person_name ? '' : 'text-slate-400'}>{l.person_name || 'Desconocido'}</span></div></td>
+                        <td className="td"><div className="flex items-center gap-2"><Avatar name={l.person_name || '?'} photo={l.photo} size={28} /><span className={l.person_name ? '' : 'text-neutral-400'}>{l.person_name || 'Desconocido'}</span></div></td>
                         <td className="td">{l.door_name || '—'}</td>
-                        <td className="td"><span className="inline-flex items-center gap-1.5">{Icon && <Icon size={14} className="text-slate-400" />}{METHODS[l.method]}</span>{l.credential && <div className="font-mono text-[11px] text-slate-400">{l.credential}</div>}</td>
+                        <td className="td"><span className="inline-flex items-center gap-1.5">{Icon && <Icon size={14} className="text-neutral-400" />}{METHODS[l.method]}</span>{l.credential && <div className="font-mono text-[11px] text-neutral-400">{l.credential}</div>}</td>
                         <td className="td"><ResultBadge result={l.result} /></td>
-                        <td className="td text-slate-600 dark:text-slate-400">{l.reason}</td>
+                        <td className="td text-neutral-600 dark:text-neutral-400">{l.reason}</td>
                       </tr>
                     );
                   })}
                 </tbody>
               </table>
             </div>
-            <ul className="divide-y divide-slate-100 dark:divide-slate-800 md:hidden">
+            <ul className="divide-y divide-neutral-100 dark:divide-neutral-800 md:hidden">
               {data.data.map((l) => (
                 <li key={l.id} className={`flex items-start gap-3 p-4 ${newIds.includes(l.id) ? 'flash' : ''}`}>
                   <Avatar name={l.person_name || '?'} photo={l.photo} size={36} />
                   <div className="min-w-0 flex-1">
                     <div className="flex items-center justify-between gap-2"><span className="truncate text-sm font-medium">{l.person_name || 'Desconocido'}</span><ResultBadge result={l.result} /></div>
-                    <div className="text-xs text-slate-500">{l.door_name} · {METHODS[l.method]}</div>
-                    <div className="text-xs text-slate-400">{fmtDateTime(l.ts, true)} · {l.reason}</div>
+                    <div className="text-xs text-neutral-500">{l.door_name} · {METHODS[l.method]}</div>
+                    <div className="text-xs text-neutral-400">{fmtDateTime(l.ts, true)} · {l.reason}</div>
                   </div>
                 </li>
               ))}

@@ -5,7 +5,7 @@ import { api, qs } from '../lib/api.js';
 import { ACTIONS, ENTITIES, fmtDateTime, daysAgo, today } from '../lib/format.js';
 import { PageHeader, Loading, Empty, Pagination, Badge, Spinner } from '../components/ui.jsx';
 
-const ACTION_COLOR = { create: 'green', update: 'blue', delete: 'red', login: 'gray', login_failed: 'yellow', open: 'purple', restore: 'red', backup: 'gray' };
+const ACTION_COLOR = { delete: 'red', login_failed: 'red', restore: 'red' };
 
 function Details({ details }) {
   if (!details) return null;
@@ -14,19 +14,19 @@ function Details({ details }) {
     <div className="space-y-2 text-xs">
       {changes && typeof changes === 'object' && Object.keys(changes).length > 0 && (
         <table className="w-full max-w-2xl">
-          <thead><tr className="text-left text-slate-500"><th className="py-1 pr-4 font-medium">Campo</th><th className="py-1 pr-4 font-medium">Antes</th><th className="py-1 font-medium">Después</th></tr></thead>
+          <thead><tr className="text-left text-neutral-500"><th className="py-1 pr-4 font-medium">Campo</th><th className="py-1 pr-4 font-medium">Antes</th><th className="py-1 font-medium">Después</th></tr></thead>
           <tbody>
             {Object.entries(changes).map(([k, v]) => (
-              <tr key={k} className="border-t border-slate-200 dark:border-slate-700">
+              <tr key={k} className="border-t border-neutral-200 dark:border-neutral-700">
                 <td className="py-1 pr-4 font-mono">{k}</td>
-                <td className="py-1 pr-4 text-red-600 dark:text-red-400">{typeof v === 'object' && v ? String(v.de ?? '—') : '—'}</td>
-                <td className="py-1 text-emerald-600 dark:text-emerald-400">{typeof v === 'object' && v ? String(v.a ?? '—') : String(v)}</td>
+                <td className="py-1 pr-4 text-neutral-500 line-through decoration-neutral-300">{typeof v === 'object' && v ? String(v.de ?? '—') : '—'}</td>
+                <td className="py-1 text-neutral-900 dark:text-neutral-100">{typeof v === 'object' && v ? String(v.a ?? '—') : String(v)}</td>
               </tr>
             ))}
           </tbody>
         </table>
       )}
-      <pre className="overflow-x-auto rounded-lg bg-slate-100 p-3 text-[11px] dark:bg-slate-800">{JSON.stringify(Object.fromEntries(Object.entries(details).filter(([k]) => k !== 'cambios')), null, 2)}</pre>
+      <pre className="overflow-x-auto border border-neutral-200 bg-neutral-50 p-3 text-[11px] dark:border-neutral-800 dark:bg-neutral-950">{JSON.stringify(Object.fromEntries(Object.entries(details).filter(([k]) => k !== 'cambios')), null, 2)}</pre>
     </div>
   );
 }
@@ -55,11 +55,11 @@ export default function Audit() {
     <>
       <PageHeader title="Auditoría" subtitle="Acciones realizadas por los administradores del sistema"
         actions={<>
-          <button className="btn-secondary" onClick={() => exportFile('xlsx')} disabled={!!exporting}>{exporting === 'xlsx' ? <Spinner /> : <FileSpreadsheet size={16} className="text-emerald-600" />} Excel</button>
-          <button className="btn-secondary" onClick={() => exportFile('pdf')} disabled={!!exporting}>{exporting === 'pdf' ? <Spinner /> : <FileText size={16} className="text-red-600" />} PDF</button>
+          <button className="btn-secondary" onClick={() => exportFile('xlsx')} disabled={!!exporting}>{exporting === 'xlsx' ? <Spinner /> : <FileSpreadsheet size={16} />} Excel</button>
+          <button className="btn-secondary" onClick={() => exportFile('pdf')} disabled={!!exporting}>{exporting === 'pdf' ? <Spinner /> : <FileText size={16} />} PDF</button>
         </>} />
       <div className="card">
-        <div className="grid grid-cols-2 gap-2 border-b border-slate-200 p-4 dark:border-slate-800 sm:grid-cols-3 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-2 border-b border-neutral-200 p-4 dark:border-neutral-800 sm:grid-cols-3 lg:grid-cols-5">
           <label><span className="label">Desde</span><input type="date" className="input" value={filters.from} onChange={set('from')} /></label>
           <label><span className="label">Hasta</span><input type="date" className="input" value={filters.to} onChange={set('to')} /></label>
           <label><span className="label">Usuario</span><select className="input" value={filters.user} onChange={set('user')}><option value="">Todos</option>{meta.users.map((u) => <option key={u}>{u}</option>)}</select></label>
@@ -68,21 +68,21 @@ export default function Audit() {
         </div>
         {!data ? <Loading /> : data.data.length === 0 ? <Empty text="Sin registros de auditoría" /> : (
           <>
-            <ul className="divide-y divide-slate-100 dark:divide-slate-800">
+            <ul className="divide-y divide-neutral-100 dark:divide-neutral-800">
               {data.data.map((a) => (
                 <li key={a.id}>
-                  <button className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-slate-50 dark:hover:bg-slate-800/40" onClick={() => setOpen(open === a.id ? null : a.id)}>
-                    {a.details ? (open === a.id ? <ChevronDown size={16} className="shrink-0 text-slate-400" /> : <ChevronRight size={16} className="shrink-0 text-slate-400" />) : <span className="w-4" />}
-                    <span className="w-36 shrink-0 text-xs tabular-nums text-slate-500 max-sm:hidden">{fmtDateTime(a.ts, true)}</span>
+                  <button className="flex w-full items-center gap-3 px-4 py-3 text-left hover:bg-neutral-50 dark:hover:bg-neutral-800/40" onClick={() => setOpen(open === a.id ? null : a.id)}>
+                    {a.details ? (open === a.id ? <ChevronDown size={16} className="shrink-0 text-neutral-400" /> : <ChevronRight size={16} className="shrink-0 text-neutral-400" />) : <span className="w-4" />}
+                    <span className="w-36 shrink-0 text-xs tabular-nums text-neutral-500 max-sm:hidden">{fmtDateTime(a.ts, true)}</span>
                     <span className="min-w-0 flex-1">
                       <span className="flex flex-wrap items-center gap-2 text-sm">
                         <span className="font-medium">{a.username || 'sistema'}</span>
                         <Badge color={ACTION_COLOR[a.action] || 'gray'}>{ACTIONS[a.action] || a.action}</Badge>
-                        <span className="text-slate-500">{ENTITIES[a.entity] || a.entity}{a.entity_id ? ` #${a.entity_id}` : ''}</span>
+                        <span className="text-neutral-500">{ENTITIES[a.entity] || a.entity}{a.entity_id ? ` #${a.entity_id}` : ''}</span>
                       </span>
-                      <span className="block truncate text-xs text-slate-500">{summary(a.details)}<span className="sm:hidden"> · {fmtDateTime(a.ts)}</span></span>
+                      <span className="block truncate text-xs text-neutral-500">{summary(a.details)}<span className="sm:hidden"> · {fmtDateTime(a.ts)}</span></span>
                     </span>
-                    <span className="shrink-0 font-mono text-xs text-slate-400 max-md:hidden">{a.ip}</span>
+                    <span className="shrink-0 font-mono text-xs text-neutral-400 max-md:hidden">{a.ip}</span>
                   </button>
                   {open === a.id && a.details && <div className="px-4 pb-4 pl-11"><Details details={a.details} /></div>}
                 </li>

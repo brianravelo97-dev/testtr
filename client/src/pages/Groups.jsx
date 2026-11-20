@@ -7,7 +7,8 @@ import { useConfirm } from '../context/ConfirmContext.jsx';
 import { DAYS, DAY_ORDER, formatRut } from '../lib/format.js';
 import { PageHeader, Modal, Field, Loading, Empty, Spinner, SearchInput } from '../components/ui.jsx';
 
-const COLORS = ['#3b82f6', '#f59e0b', '#8b5cf6', '#10b981', '#ef4444', '#ec4899', '#06b6d4', '#64748b'];
+const COLORS = [ // (color se conserva en BD por compatibilidad, ya no se muestra)
+ '#3b82f6', '#f59e0b', '#8b5cf6', '#10b981', '#ef4444', '#ec4899', '#06b6d4', '#64748b'];
 const PRESETS = [
   { label: 'Lun–Vie 08:00–18:00', days: [1, 2, 3, 4, 5], start_time: '08:00', end_time: '18:00' },
   { label: 'Sábado 09:00–14:00', days: [6], start_time: '09:00', end_time: '14:00' },
@@ -53,12 +54,7 @@ function GroupForm({ group, doors, people, onClose, onSaved }) {
       footer={<><button className="btn-secondary" onClick={onClose}>Cancelar</button><button className="btn-primary" onClick={submit} disabled={busy}>{busy && <Spinner />} Guardar</button></>}>
       <div className="space-y-6 p-5">
         <div className="grid gap-4 sm:grid-cols-2">
-          <Field label="Nombre *"><input className="input" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} /></Field>
-          <Field label="Color">
-            <div className="flex gap-2 pt-1">
-              {COLORS.map((c) => <button key={c} type="button" onClick={() => setF({ ...f, color: c })} className={`h-7 w-7 rounded-full ring-offset-2 dark:ring-offset-slate-900 ${f.color === c ? 'ring-2 ring-slate-400' : ''}`} style={{ background: c }} aria-label={c} />)}
-            </div>
-          </Field>
+          <Field label="Nombre *" className="sm:col-span-2"><input className="input" value={f.name} onChange={(e) => setF({ ...f, name: e.target.value })} /></Field>
           <Field label="Descripción" className="sm:col-span-2"><input className="input" value={f.description} onChange={(e) => setF({ ...f, description: e.target.value })} /></Field>
         </div>
 
@@ -72,23 +68,23 @@ function GroupForm({ group, doors, people, onClose, onSaved }) {
           </div>
           <div className="space-y-3">
             {f.schedules.map((s, i) => (
-              <div key={i} className="flex flex-col gap-3 rounded-lg border border-slate-200 p-3 dark:border-slate-800 sm:flex-row sm:items-center">
+              <div key={i} className="flex flex-col gap-3 rounded-xs border border-neutral-200 p-3 dark:border-neutral-800 sm:flex-row sm:items-center">
                 <div className="flex flex-wrap gap-1">
                   {DAY_ORDER.map((d) => (
                     <button key={d} type="button" onClick={() => setSched(i, { days: s.days.includes(d) ? s.days.filter((x) => x !== d) : [...s.days, d] })}
-                      className={`h-8 w-10 rounded-md text-xs font-medium transition ${s.days.includes(d) ? 'bg-blue-600 text-white' : 'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300'}`}>{DAYS[d]}</button>
+                      className={`h-8 w-10 rounded-xs border text-xs font-medium transition ${s.days.includes(d) ? 'border-neutral-900 bg-neutral-900 text-white dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-900' : 'border-neutral-300 text-neutral-600 dark:border-neutral-700 dark:text-neutral-300'}`}>{DAYS[d]}</button>
                   ))}
                 </div>
                 <div className="flex flex-1 items-center gap-2">
                   <input type="time" className="input py-1.5" value={s.start_time} onChange={(e) => setSched(i, { start_time: e.target.value })} />
-                  <span className="text-slate-400">a</span>
+                  <span className="text-neutral-400">a</span>
                   <input type="time" className="input py-1.5" value={s.end_time} onChange={(e) => setSched(i, { end_time: e.target.value })} />
-                  <button type="button" className="btn-ghost p-2 text-red-600" onClick={() => setF({ ...f, schedules: f.schedules.filter((_, j) => j !== i) })} aria-label="Quitar"><X size={16} /></button>
+                  <button type="button" className="btn-ghost p-2 hover:text-red-700" onClick={() => setF({ ...f, schedules: f.schedules.filter((_, j) => j !== i) })} aria-label="Quitar"><X size={16} /></button>
                 </div>
               </div>
             ))}
-            {f.schedules.length === 0 && <p className="rounded-lg bg-amber-50 p-3 text-xs text-amber-800 dark:bg-amber-500/10 dark:text-amber-400">Sin horarios: los integrantes no podrán acceder por este grupo.</p>}
-            <p className="text-xs text-slate-400">Si la hora de término es menor que la de inicio, el rango cruza la medianoche.</p>
+            {f.schedules.length === 0 && <p className="border-l-2 border-neutral-400 bg-neutral-50 p-3 text-xs text-neutral-700 dark:bg-neutral-800/50 dark:text-neutral-300">Sin horarios: los integrantes no podrán acceder por este grupo.</p>}
+            <p className="text-xs text-neutral-400">Si la hora de término es menor que la de inicio, el rango cruza la medianoche.</p>
           </div>
         </section>
 
@@ -96,22 +92,22 @@ function GroupForm({ group, doors, people, onClose, onSaved }) {
           <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold"><DoorOpen size={16} /> Puertas</h3>
           <div className="flex flex-wrap gap-2">
             {doors.map((d) => (
-              <label key={d.id} className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2 text-sm ${f.door_ids.includes(d.id) ? 'border-blue-500 bg-blue-50 dark:bg-blue-500/10' : 'border-slate-200 dark:border-slate-700'}`}>
+              <label key={d.id} className={`flex cursor-pointer items-center gap-2 rounded-xs border px-3 py-2 text-sm ${f.door_ids.includes(d.id) ? 'border-neutral-900 bg-neutral-50 dark:border-neutral-200 dark:bg-neutral-800' : 'border-neutral-200 dark:border-neutral-700'}`}>
                 <input type="checkbox" checked={f.door_ids.includes(d.id)} onChange={() => toggle('door_ids', d.id)} /> {d.name}
               </label>
             ))}
-            {doors.length === 0 && <p className="text-sm text-slate-400">No hay puertas creadas.</p>}
+            {doors.length === 0 && <p className="text-sm text-neutral-400">No hay puertas creadas.</p>}
           </div>
         </section>
 
         <section>
-          <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold"><Users size={16} /> Personas <span className="font-normal text-slate-500">({f.person_ids.length} seleccionadas)</span></h3>
+          <h3 className="mb-3 flex items-center gap-2 text-sm font-semibold"><Users size={16} /> Personas <span className="font-normal text-neutral-500">({f.person_ids.length} seleccionadas)</span></h3>
           <SearchInput value={search} onChange={setSearch} placeholder="Filtrar personas…" className="mb-2" />
-          <div className="max-h-56 divide-y divide-slate-100 overflow-y-auto rounded-lg border border-slate-200 dark:divide-slate-800 dark:border-slate-800">
+          <div className="max-h-56 divide-y divide-neutral-100 overflow-y-auto rounded-xs border border-neutral-200 dark:divide-neutral-800 dark:border-neutral-800">
             {filtered.map((p) => (
-              <label key={p.id} className="flex cursor-pointer items-center gap-3 px-3 py-2 text-sm hover:bg-slate-50 dark:hover:bg-slate-800/50">
+              <label key={p.id} className="flex cursor-pointer items-center gap-3 px-3 py-2 text-sm hover:bg-neutral-50 dark:hover:bg-neutral-800/50">
                 <input type="checkbox" checked={f.person_ids.includes(p.id)} onChange={() => toggle('person_ids', p.id)} />
-                <span className="flex-1">{p.name}</span><span className="text-xs text-slate-400">{formatRut(p.rut)}</span>
+                <span className="flex-1">{p.name}</span><span className="text-xs text-neutral-400">{formatRut(p.rut)}</span>
               </label>
             ))}
           </div>
@@ -149,31 +145,30 @@ export default function Groups() {
         <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
           {groups.map((g) => (
             <div key={g.id} className="card flex flex-col overflow-hidden">
-              <div className="h-1.5" style={{ background: g.color }} />
-              <div className="flex-1 p-5">
+                            <div className="flex-1 p-5">
                 <div className="flex items-start justify-between gap-2">
                   <div>
-                    <h3 className="font-semibold">{g.name}</h3>
-                    <p className="text-xs text-slate-500">{g.description || 'Sin descripción'}</p>
+                    <h3 className="font-medium">{g.name}</h3>
+                    <p className="text-xs text-neutral-500">{g.description || 'Sin descripción'}</p>
                   </div>
                   {can.write && (
                     <div className="flex shrink-0">
                       <button className="btn-ghost p-2" onClick={() => setEditing(g)} title="Editar"><Pencil size={16} /></button>
-                      <button className="btn-ghost p-2 text-red-600" onClick={() => remove(g)} title="Eliminar"><Trash2 size={16} /></button>
+                      <button className="btn-ghost p-2 hover:text-red-700" onClick={() => remove(g)} title="Eliminar"><Trash2 size={16} /></button>
                     </div>
                   )}
                 </div>
                 <div className="mt-4 space-y-1.5">
                   {g.schedules.map((s) => (
-                    <div key={s.id} className="flex items-center gap-2 text-sm"><Clock size={14} className="text-slate-400" /><span className="font-medium">{daysLabel(s.days)}</span><span className="text-slate-500">{s.start_time}–{s.end_time}</span></div>
+                    <div key={s.id} className="flex items-center gap-2 text-sm"><Clock size={14} className="text-neutral-400" /><span className="font-medium">{daysLabel(s.days)}</span><span className="text-neutral-500">{s.start_time}–{s.end_time}</span></div>
                   ))}
-                  {g.schedules.length === 0 && <p className="text-xs text-amber-600">Sin horarios definidos</p>}
+                  {g.schedules.length === 0 && <p className="text-xs text-red-700 dark:text-red-500">Sin horarios definidos</p>}
                 </div>
                 <div className="mt-4 flex flex-wrap gap-1.5">
-                  {g.doors.map((d) => <span key={d.id} className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2 py-1 text-xs dark:bg-slate-800"><DoorOpen size={12} /> {d.name}</span>)}
+                  {g.doors.map((d) => <span key={d.id} className="inline-flex items-center gap-1 border border-neutral-300 px-1.5 py-0.5 text-xs text-neutral-700 dark:border-neutral-700 dark:text-neutral-300"><DoorOpen size={12} /> {d.name}</span>)}
                 </div>
               </div>
-              <div className="flex items-center gap-4 border-t border-slate-100 px-5 py-3 text-xs text-slate-500 dark:border-slate-800">
+              <div className="flex items-center gap-4 border-t border-neutral-100 px-5 py-3 text-xs text-neutral-500 dark:border-neutral-800">
                 <span className="flex items-center gap-1"><Users size={14} /> {g.people_count} personas</span>
                 <span className="flex items-center gap-1"><DoorOpen size={14} /> {g.door_count} puertas</span>
               </div>

@@ -80,7 +80,7 @@ function PersonForm({ person, groups, areas, onClose, onSaved }) {
           <div className="flex flex-col items-center gap-2">
             <div className="relative">
               <Avatar name={f.name} photo={photo} size={96} />
-              {photo && <button type="button" onClick={() => { setPhoto(null); setPhotoFile(null); }} className="absolute -right-1 -top-1 rounded-full bg-red-600 p-1 text-white" aria-label="Quitar foto"><X size={12} /></button>}
+              {photo && <button type="button" onClick={() => { setPhoto(null); setPhotoFile(null); }} className="absolute -right-1 -top-1 border border-neutral-300 bg-white p-0.5 text-neutral-600 hover:text-red-700 dark:border-neutral-600 dark:bg-neutral-900" aria-label="Quitar foto"><X size={12} /></button>}
             </div>
             <button type="button" className="btn-ghost px-2 py-1 text-xs" onClick={() => fileRef.current.click()}><Camera size={14} /> Foto</button>
             <input ref={fileRef} type="file" accept="image/jpeg,image/png,image/webp" className="hidden" onChange={pickPhoto} />
@@ -121,15 +121,15 @@ function PersonForm({ person, groups, areas, onClose, onSaved }) {
                 placeholder={person?.has_pin ? '••••••' : ''} onChange={(e) => setF({ ...f, pin: e.target.value.replace(/\D/g, '') })} />
             </Field>
           </div>
-          {person?.has_pin && <label className="mt-2 flex items-center gap-2 text-xs text-slate-500"><input type="checkbox" checked={f.clear_pin} onChange={set('clear_pin')} /> Eliminar PIN actual</label>}
-          <div className="mt-4 rounded-lg border border-slate-200 p-4 dark:border-slate-800">
+          {person?.has_pin && <label className="mt-2 flex items-center gap-2 text-xs text-neutral-500"><input type="checkbox" checked={f.clear_pin} onChange={set('clear_pin')} /> Eliminar PIN actual</label>}
+          <div className="mt-4 rounded-xs border border-neutral-200 p-4 dark:border-neutral-800">
             <Toggle checked={f.web_access} onChange={set('web_access')} label="Acceso web (apertura remota desde el celular)" />
             {f.web_access && (
               <div className="mt-3 grid gap-4 sm:grid-cols-2">
                 <Field label={person?.has_web_password ? 'Nueva contraseña web (opcional)' : 'Contraseña web *'} error={errors.web_password} hint="Inicia sesión con su RUT y esta contraseña">
                   <input className="input" type="password" autoComplete="new-password" value={f.web_password} onChange={set('web_password')} />
                 </Field>
-                <p className="self-center text-xs text-slate-500">Para abrir puertas también necesita un PIN de 6 dígitos y pertenecer a un grupo con la puerta y horario vigente.</p>
+                <p className="self-center text-xs text-neutral-500">Para abrir puertas también necesita un PIN de 6 dígitos y pertenecer a un grupo con la puerta y horario vigente.</p>
               </div>
             )}
           </div>
@@ -142,13 +142,12 @@ function PersonForm({ person, groups, areas, onClose, onSaved }) {
               const on = f.group_ids.includes(g.id);
               return (
                 <button type="button" key={g.id} onClick={() => setF({ ...f, group_ids: on ? f.group_ids.filter((x) => x !== g.id) : [...f.group_ids, g.id] })}
-                  className={`flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm transition ${on ? 'border-transparent text-white' : 'border-slate-300 dark:border-slate-700'}`}
-                  style={on ? { background: g.color } : {}}>
-                  <span className="h-2 w-2 rounded-full" style={{ background: on ? '#fff' : g.color }} /> {g.name}
+                  className={`rounded-xs border px-3 py-1.5 text-sm transition ${on ? 'border-neutral-900 bg-neutral-900 text-white dark:border-neutral-100 dark:bg-neutral-100 dark:text-neutral-900' : 'border-neutral-300 text-neutral-700 hover:border-neutral-500 dark:border-neutral-700 dark:text-neutral-300'}`}>
+                  {g.name}
                 </button>
               );
             })}
-            {groups.length === 0 && <p className="text-sm text-slate-400">No hay grupos creados.</p>}
+            {groups.length === 0 && <p className="text-sm text-neutral-400">No hay grupos creados.</p>}
           </div>
         </section>
       </form>
@@ -190,7 +189,7 @@ export default function People() {
         actions={can.write && <button className="btn-primary" onClick={() => setEditing('new')}><Plus size={16} /> Nueva persona</button>} />
 
       <div className="card">
-        <div className="flex flex-col gap-3 border-b border-slate-200 p-4 dark:border-slate-800 md:flex-row">
+        <div className="flex flex-col gap-3 border-b border-neutral-200 p-4 dark:border-neutral-800 md:flex-row">
           <SearchInput value={q} onChange={setQ} placeholder="Buscar por nombre, RUT, email o tarjeta…" className="flex-1" />
           <button className="btn-secondary md:hidden" onClick={() => setShowFilters(!showFilters)}><Filter size={16} /> Filtros</button>
           <div className={`grid grid-cols-1 gap-2 sm:grid-cols-3 md:flex ${showFilters ? '' : 'hidden md:flex'}`}>
@@ -211,37 +210,37 @@ export default function People() {
             {/* Tabla escritorio */}
             <div className="hidden overflow-x-auto md:block">
               <table className="w-full">
-                <thead className="bg-slate-50 dark:bg-slate-800/50">
+                <thead>
                   <tr><th className="th">Persona</th><th className="th">Cargo / Área</th><th className="th">Credenciales</th><th className="th">Grupos</th><th className="th">Vigencia</th><th className="th">Estado</th><th className="th" /></tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+                <tbody className="divide-y divide-neutral-100 dark:divide-neutral-800">
                   {data.data.map((p) => (
-                    <tr key={p.id} className="hover:bg-slate-50 dark:hover:bg-slate-800/40">
+                    <tr key={p.id} className="hover:bg-neutral-50 dark:hover:bg-neutral-800/40">
                       <td className="td">
                         <div className="flex items-center gap-3">
                           <Avatar name={p.name} photo={p.photo} />
-                          <div className="min-w-0"><div className="font-medium">{p.name}</div><div className="text-xs text-slate-500">{formatRut(p.rut)}</div></div>
+                          <div className="min-w-0"><div className="font-medium">{p.name}</div><div className="text-xs text-neutral-500">{formatRut(p.rut)}</div></div>
                         </div>
                       </td>
-                      <td className="td"><div>{p.position || '—'}</div><div className="text-xs text-slate-500">{p.area}</div></td>
+                      <td className="td"><div>{p.position || '—'}</div><div className="text-xs text-neutral-500">{p.area}</div></td>
                       <td className="td">
-                        <div className="flex gap-1.5 text-slate-400">
-                          <span title={p.fingerprint_id ? `Huella ID ${p.fingerprint_id}` : 'Sin huella'} className={p.fingerprint_id ? 'text-blue-600 dark:text-blue-400' : ''}><Fingerprint size={17} /></span>
-                          <span title={p.card_number ? `Tarjeta ${p.card_number}` : 'Sin tarjeta'} className={p.card_number ? 'text-blue-600 dark:text-blue-400' : ''}><CreditCard size={17} /></span>
-                          <span title={p.has_pin ? 'Con PIN' : 'Sin PIN'} className={p.has_pin ? 'text-blue-600 dark:text-blue-400' : ''}><Hash size={17} /></span>
-                          <span title={p.web_access ? 'Acceso web' : 'Sin acceso web'} className={p.web_access ? 'text-blue-600 dark:text-blue-400' : ''}><Globe size={17} /></span>
+                        <div className="flex gap-1.5 text-neutral-400">
+                          <span title={p.fingerprint_id ? `Huella ID ${p.fingerprint_id}` : 'Sin huella'} className={p.fingerprint_id ? 'text-neutral-800 dark:text-neutral-200' : 'text-neutral-300 dark:text-neutral-700'}><Fingerprint size={17} /></span>
+                          <span title={p.card_number ? `Tarjeta ${p.card_number}` : 'Sin tarjeta'} className={p.card_number ? 'text-neutral-800 dark:text-neutral-200' : 'text-neutral-300 dark:text-neutral-700'}><CreditCard size={17} /></span>
+                          <span title={p.has_pin ? 'Con PIN' : 'Sin PIN'} className={p.has_pin ? 'text-neutral-800 dark:text-neutral-200' : 'text-neutral-300 dark:text-neutral-700'}><Hash size={17} /></span>
+                          <span title={p.web_access ? 'Acceso web' : 'Sin acceso web'} className={p.web_access ? 'text-neutral-800 dark:text-neutral-200' : 'text-neutral-300 dark:text-neutral-700'}><Globe size={17} /></span>
                         </div>
                       </td>
-                      <td className="td"><div className="flex flex-wrap gap-1">{p.groups.map((g) => <span key={g.id} className="rounded-full px-2 py-0.5 text-xs text-white" style={{ background: g.color }}>{g.name}</span>)}{p.groups.length === 0 && <span className="text-xs text-slate-400">Sin grupo</span>}</div></td>
+                      <td className="td"><div className="flex flex-wrap gap-1">{p.groups.map((g) => <span key={g.id} className="border border-neutral-300 px-1.5 py-0.5 text-xs text-neutral-700 dark:border-neutral-700 dark:text-neutral-300">{g.name}</span>)}{p.groups.length === 0 && <span className="text-xs text-neutral-400">Sin grupo</span>}</div></td>
                       <td className="td whitespace-nowrap text-xs">
                         <div>{fmtDate(p.valid_from)}</div>
-                        <div className={expired(p) ? 'font-medium text-red-600' : 'text-slate-500'}>{p.valid_to ? `→ ${fmtDate(p.valid_to)}` : '→ Indefinido'}</div>
+                        <div className={expired(p) ? 'text-red-700 dark:text-red-500' : 'text-neutral-500'}>{p.valid_to ? `→ ${fmtDate(p.valid_to)}` : '→ Indefinido'}</div>
                       </td>
                       <td className="td">{p.status === 'active' ? (expired(p) ? <Badge color="yellow">Vencido</Badge> : <Badge color="green">Activo</Badge>) : <Badge color="red">Suspendido</Badge>}</td>
                       <td className="td whitespace-nowrap text-right">
                         {can.write && <>
                           <button className="btn-ghost p-2" onClick={() => setEditing(p)} title="Editar"><Pencil size={16} /></button>
-                          <button className="btn-ghost p-2 text-red-600" onClick={() => remove(p)} title="Eliminar"><Trash2 size={16} /></button>
+                          <button className="btn-ghost p-2 hover:text-red-700" onClick={() => remove(p)} title="Eliminar"><Trash2 size={16} /></button>
                         </>}
                       </td>
                     </tr>
@@ -250,18 +249,18 @@ export default function People() {
               </table>
             </div>
             {/* Tarjetas móvil */}
-            <ul className="divide-y divide-slate-100 dark:divide-slate-800 md:hidden">
+            <ul className="divide-y divide-neutral-100 dark:divide-neutral-800 md:hidden">
               {data.data.map((p) => (
                 <li key={p.id} className="flex items-center gap-3 p-4" onClick={() => can.write && setEditing(p)}>
                   <Avatar name={p.name} photo={p.photo} size={42} />
                   <div className="min-w-0 flex-1">
                     <div className="truncate font-medium">{p.name}</div>
-                    <div className="truncate text-xs text-slate-500">{formatRut(p.rut)} · {p.area || '—'}</div>
-                    <div className="mt-1 flex flex-wrap gap-1">{p.groups.map((g) => <span key={g.id} className="rounded-full px-2 py-0.5 text-[10px] text-white" style={{ background: g.color }}>{g.name}</span>)}</div>
+                    <div className="truncate text-xs text-neutral-500">{formatRut(p.rut)} · {p.area || '—'}</div>
+                    <div className="mt-1 flex flex-wrap gap-1">{p.groups.map((g) => <span key={g.id} className="border border-neutral-300 px-1 text-[10px] text-neutral-600 dark:border-neutral-700 dark:text-neutral-400">{g.name}</span>)}</div>
                   </div>
                   <div className="flex flex-col items-end gap-2">
                     {p.status === 'active' ? (expired(p) ? <Badge color="yellow">Vencido</Badge> : <Badge color="green">Activo</Badge>) : <Badge color="red">Suspendido</Badge>}
-                    {can.write && <button className="p-1 text-red-600" onClick={(e) => { e.stopPropagation(); remove(p); }} aria-label="Eliminar"><Trash2 size={16} /></button>}
+                    {can.write && <button className="p-1 text-neutral-400 hover:text-red-700" onClick={(e) => { e.stopPropagation(); remove(p); }} aria-label="Eliminar"><Trash2 size={16} /></button>}
                   </div>
                 </li>
               ))}

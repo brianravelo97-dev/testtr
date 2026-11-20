@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import toast from 'react-hot-toast';
-import { Plus, Pencil, Trash2, Cpu, Plug, RefreshCw, Download, Users, Wifi, WifiOff } from 'lucide-react';
+import { Plus, Pencil, Trash2, Cpu, Plug, RefreshCw, Download, Users } from 'lucide-react';
 import { api } from '../lib/api.js';
 import { useAuth } from '../context/AuthContext.jsx';
 import { useConfirm } from '../context/ConfirmContext.jsx';
@@ -25,7 +25,7 @@ function DriverConfig({ driver, config, onChange }) {
       <Field label="Timeout (ms)"><input type="number" className="input" value={config.timeout ?? 10000} onChange={(e) => set('timeout', Number(e.target.value))} /></Field>
       <Field label="Puerto local UDP (inport)"><input type="number" className="input" value={config.inport ?? 4000} onChange={(e) => set('inport', Number(e.target.value))} /></Field>
       <div className="sm:col-span-2"><Toggle checked={!!config.realtime} onChange={(v) => set('realtime', v)} label="Escuchar marcaciones en tiempo real" /></div>
-      <p className="text-xs text-slate-500 sm:col-span-2">Puerto por defecto de ZKTeco: 4370. Requiere la librería opcional <code>node-zklib</code>.</p>
+      <p className="text-xs text-neutral-500 sm:col-span-2">Puerto por defecto de ZKTeco: 4370. Requiere la librería opcional <code>node-zklib</code>.</p>
     </div>
   );
   return (
@@ -78,9 +78,9 @@ function DeviceForm({ device, drivers, onClose, onSaved }) {
           <div className="grid gap-2 sm:grid-cols-3">
             {drivers.map((d) => (
               <button type="button" key={d.id} onClick={() => changeDriver(d.id)}
-                className={`rounded-lg border p-3 text-left text-sm transition ${f.driver === d.id ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-500/20 dark:bg-blue-500/10' : 'border-slate-200 hover:border-slate-300 dark:border-slate-700'}`}>
+                className={`rounded-xs border p-3 text-left text-sm transition ${f.driver === d.id ? 'border-neutral-900 bg-neutral-50 dark:border-neutral-200 dark:bg-neutral-800' : 'border-neutral-200 hover:border-neutral-300 dark:border-neutral-700'}`}>
                 <div className="font-medium">{d.label}</div>
-                <div className="mt-1 text-xs text-slate-500">{[d.capabilities.users && 'usuarios', d.capabilities.open && 'apertura', d.capabilities.logs && 'marcaciones'].filter(Boolean).join(' · ')}</div>
+                <div className="mt-1 text-xs text-neutral-500">{[d.capabilities.users && 'usuarios', d.capabilities.open && 'apertura', d.capabilities.logs && 'marcaciones'].filter(Boolean).join(' · ')}</div>
               </button>
             ))}
           </div>
@@ -89,7 +89,7 @@ function DeviceForm({ device, drivers, onClose, onSaved }) {
         <Field label="Modelo"><input className="input" value={f.model} onChange={set('model')} /></Field>
         <Field label={f.driver === 'simulator' ? 'IP (opcional)' : 'IP *'}><input className="input" value={f.ip} onChange={set('ip')} placeholder="192.168.1.201" /></Field>
         <Field label="Puerto"><input type="number" className="input" value={f.port} onChange={set('port')} /></Field>
-        <div className="border-t border-slate-200 pt-4 dark:border-slate-800 sm:col-span-2"><h3 className="text-sm font-semibold">Configuración del driver</h3></div>
+        <div className="border-t border-neutral-200 pt-4 dark:border-neutral-800 sm:col-span-2"><h3 className="text-sm font-semibold">Configuración del driver</h3></div>
         <DriverConfig driver={f.driver} config={f.config} onChange={(config) => setF({ ...f, config })} />
       </form>
     </Modal>
@@ -102,10 +102,10 @@ function DeviceUsers({ device, onClose }) {
   useEffect(() => { api.get(`/devices/${device.id}/users`).then(setUsers).catch((e) => setError(e.message)); }, [device.id]);
   return (
     <Modal open onClose={onClose} title={`Usuarios en ${device.name}`}>
-      {error ? <p className="p-5 text-sm text-red-600">{error}</p> : !users ? <Loading /> : users.length === 0 ? <Empty text="El equipo no tiene usuarios" /> : (
+      {error ? <p className="p-5 text-sm text-red-700">{error}</p> : !users ? <Loading /> : users.length === 0 ? <Empty text="El equipo no tiene usuarios" /> : (
         <table className="w-full">
-          <thead className="bg-slate-50 dark:bg-slate-800/50"><tr><th className="th">ID</th><th className="th">Nombre</th><th className="th">Tarjeta</th><th className="th">PIN</th></tr></thead>
-          <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
+          <thead><tr><th className="th">ID</th><th className="th">Nombre</th><th className="th">Tarjeta</th><th className="th">PIN</th></tr></thead>
+          <tbody className="divide-y divide-neutral-100 dark:divide-neutral-800">
             {users.map((u) => <tr key={u.userId}><td className="td font-mono">{u.userId}</td><td className="td">{u.name}</td><td className="td font-mono text-xs">{u.cardNumber || '—'}</td><td className="td">{u.has_pin ? 'Sí' : '—'}</td></tr>)}
           </tbody>
         </table>
@@ -165,29 +165,26 @@ export default function Devices() {
             return (
               <div key={d.id} className="card p-5">
                 <div className="flex items-start gap-3">
-                  <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${online ? 'bg-emerald-100 text-emerald-600 dark:bg-emerald-500/15 dark:text-emerald-400' : 'bg-red-100 text-red-600 dark:bg-red-500/15 dark:text-red-400'}`}>
-                    {online ? <Wifi size={22} /> : <WifiOff size={22} />}
-                  </div>
                   <div className="min-w-0 flex-1">
                     <div className="flex flex-wrap items-center gap-2">
-                      <h3 className="truncate font-semibold">{d.name}</h3>
-                      <Badge color={online ? 'green' : 'red'}>{online ? 'Online' : 'Offline'}</Badge>
+                      <h3 className="truncate font-medium">{d.name}</h3>
+                      <Badge color={online ? 'green' : 'red'}>{online ? 'En línea' : 'Sin conexión'}</Badge>
                     </div>
-                    <p className="text-xs text-slate-500">{[d.brand, d.model].filter(Boolean).join(' ') || 'Sin marca/modelo'}</p>
+                    <p className="text-xs text-neutral-500">{[d.brand, d.model].filter(Boolean).join(' ') || 'Sin marca/modelo'}</p>
                   </div>
                   {can.write && (
                     <div className="flex shrink-0">
                       <button className="btn-ghost p-2" onClick={() => setEditing(d)} title="Editar"><Pencil size={16} /></button>
-                      <button className="btn-ghost p-2 text-red-600" onClick={() => remove(d)} title="Eliminar"><Trash2 size={16} /></button>
+                      <button className="btn-ghost p-2 hover:text-red-700" onClick={() => remove(d)} title="Eliminar"><Trash2 size={16} /></button>
                     </div>
                   )}
                 </div>
                 <dl className="mt-4 grid grid-cols-2 gap-x-4 gap-y-2 text-sm">
-                  <dt className="text-slate-500">Driver</dt><dd className="text-right"><Badge color={d.driver === 'simulator' ? 'purple' : 'blue'}>{d.driver}</Badge></dd>
-                  <dt className="text-slate-500">Dirección</dt><dd className="truncate text-right font-mono text-xs">{d.ip ? `${d.ip}${d.port ? `:${d.port}` : ''}` : '—'}</dd>
-                  <dt className="text-slate-500">Puertas</dt><dd className="truncate text-right">{d.door_names || '—'}</dd>
-                  <dt className="text-slate-500">Última conexión</dt><dd className="text-right text-xs">{fmtDateTime(d.last_seen)}</dd>
-                  <dt className="text-slate-500">Última sincronización</dt><dd className="text-right text-xs">{fmtDateTime(d.last_sync)}</dd>
+                  <dt className="text-neutral-500">Driver</dt><dd className="text-right"><span className="font-mono text-xs">{d.driver}</span></dd>
+                  <dt className="text-neutral-500">Dirección</dt><dd className="truncate text-right font-mono text-xs">{d.ip ? `${d.ip}${d.port ? `:${d.port}` : ''}` : '—'}</dd>
+                  <dt className="text-neutral-500">Puertas</dt><dd className="truncate text-right">{d.door_names || '—'}</dd>
+                  <dt className="text-neutral-500">Última conexión</dt><dd className="text-right text-xs">{fmtDateTime(d.last_seen)}</dd>
+                  <dt className="text-neutral-500">Última sincronización</dt><dd className="text-right text-xs">{fmtDateTime(d.last_sync)}</dd>
                 </dl>
                 {can.write && (
                   <div className="mt-5 grid grid-cols-2 gap-2">

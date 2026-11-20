@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { DoorOpen, CheckCircle2, XCircle, Delete } from 'lucide-react';
+import { CheckCircle2, XCircle, Delete } from 'lucide-react';
 import { Modal, Spinner } from './ui.jsx';
 
 /**
@@ -62,45 +62,45 @@ export default function OpenDoorModal({ door, tokenInfo, requirePin = true, onOp
       <div className="p-6 text-center">
         {state === 'ok' ? (
           <div className="py-6">
-            <CheckCircle2 size={64} className="mx-auto text-emerald-500" />
+            <CheckCircle2 size={64} className="mx-auto text-green-700 dark:text-green-500" strokeWidth={1.5} />
             <h3 className="mt-4 text-lg font-semibold">¡Puerta abierta!</h3>
-            <p className="mt-1 text-sm text-slate-500">{msg}</p>
+            <p className="mt-1 text-sm text-neutral-500">{msg}</p>
           </div>
         ) : state === 'error' ? (
           <div className="py-6">
-            <XCircle size={64} className="mx-auto text-red-500" />
+            <XCircle size={64} className="mx-auto text-red-700 dark:text-red-500" strokeWidth={1.5} />
             <h3 className="mt-4 text-lg font-semibold">No se pudo abrir</h3>
-            <p className="mt-1 text-sm text-slate-500">{msg}</p>
+            <p className="mt-1 text-sm text-neutral-500">{msg}</p>
             <button className="btn-secondary mt-6 w-full" onClick={onClose}>Cerrar</button>
           </div>
         ) : (
           <>
-            <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-blue-100 text-blue-600 dark:bg-blue-500/15"><DoorOpen size={28} /></div>
-            <h3 className="mt-3 text-lg font-semibold">{door.name}</h3>
-            <div className="mx-auto mt-3 h-1.5 w-40 overflow-hidden rounded-full bg-slate-200 dark:bg-slate-800">
-              <div className={`h-full transition-all ${left <= 10 ? 'bg-red-500' : 'bg-blue-600'}`} style={{ width: `${pct}%` }} />
+            <p className="text-xs font-medium uppercase tracking-wider text-neutral-500">Apertura remota</p>
+            <h3 className="mt-1 text-lg font-semibold">{door.name}</h3>
+            <div className="mx-auto mt-3 h-1 w-40 overflow-hidden bg-neutral-200 dark:bg-neutral-800">
+              <div className={`h-full transition-all ${left <= 10 ? 'bg-red-700' : 'bg-neutral-900 dark:bg-neutral-100'}`} style={{ width: `${pct}%` }} />
             </div>
-            <p className={`mt-1 text-xs ${left <= 10 ? 'text-red-500' : 'text-slate-500'}`}>{expired ? 'El token expiró' : `Token válido por ${left} s`}</p>
+            <p className={`mt-1 text-xs ${left <= 10 ? 'text-red-700' : 'text-neutral-500'}`}>{expired ? 'El token expiró' : `Token válido por ${left} s`}</p>
 
             {expired ? (
               <button className="btn-secondary mt-6 w-full" onClick={onClose}>Cerrar e intentar de nuevo</button>
             ) : requirePin ? (
               <>
-                <p className="mt-4 text-sm text-slate-600 dark:text-slate-400">Ingrese su PIN de 6 dígitos</p>
+                <p className="mt-4 text-sm text-neutral-600 dark:text-neutral-400">Ingrese su PIN de 6 dígitos</p>
                 <div className="my-4 flex justify-center gap-2.5">
                   {Array.from({ length: 6 }).map((_, i) => (
-                    <span key={i} className={`h-3.5 w-3.5 rounded-full transition ${i < pin.length ? 'bg-blue-600 scale-110' : 'bg-slate-200 dark:bg-slate-700'}`} />
+                    <span key={i} className={`h-3 w-3 border transition ${i < pin.length ? 'border-neutral-900 bg-neutral-900 dark:border-neutral-100 dark:bg-neutral-100' : 'border-neutral-300 dark:border-neutral-600'}`} />
                   ))}
                 </div>
                 <div className="mx-auto grid max-w-[260px] grid-cols-3 gap-2.5">
                   {['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((d) => (
-                    <button key={d} onClick={() => press(d)} className="h-14 rounded-xl bg-slate-100 text-xl font-semibold active:scale-95 active:bg-slate-200 dark:bg-slate-800 dark:active:bg-slate-700">{d}</button>
+                    <button key={d} onClick={() => press(d)} className="h-14 rounded-xs border border-neutral-200 text-xl font-medium active:bg-neutral-100 dark:border-neutral-700 dark:active:bg-neutral-800">{d}</button>
                   ))}
-                  <button onClick={onClose} className="h-14 rounded-xl text-sm text-slate-500">Cancelar</button>
-                  <button onClick={() => press('0')} className="h-14 rounded-xl bg-slate-100 text-xl font-semibold active:scale-95 dark:bg-slate-800">0</button>
-                  <button onClick={() => setPin(pin.slice(0, -1))} className="flex h-14 items-center justify-center rounded-xl text-slate-500" aria-label="Borrar"><Delete size={22} /></button>
+                  <button onClick={onClose} className="h-14 rounded-xs text-sm text-neutral-500">Cancelar</button>
+                  <button onClick={() => press('0')} className="h-14 rounded-xs border border-neutral-200 text-xl font-medium active:bg-neutral-100 dark:border-neutral-700 dark:active:bg-neutral-800">0</button>
+                  <button onClick={() => setPin(pin.slice(0, -1))} className="flex h-14 items-center justify-center rounded-xs text-neutral-500" aria-label="Borrar"><Delete size={22} /></button>
                 </div>
-                {state === 'busy' && <div className="mt-4 flex items-center justify-center gap-2 text-sm text-slate-500"><Spinner /> Abriendo…</div>}
+                {state === 'busy' && <div className="mt-4 flex items-center justify-center gap-2 text-sm text-neutral-500"><Spinner /> Abriendo…</div>}
               </>
             ) : (
               <div className="mt-6 flex gap-2">
