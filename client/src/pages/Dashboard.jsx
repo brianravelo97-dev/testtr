@@ -14,11 +14,11 @@ const C_NO = '#e11d48';
 
 function Stat({ icon: Icon, label, value, color, sub }) {
   return (
-    <div className="card flex items-center gap-4 p-4 sm:p-5">
-      <div className={`flex h-11 w-11 shrink-0 items-center justify-center rounded-xl ${color}`}><Icon size={22} /></div>
+    <div className="card flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:gap-4 sm:p-5">
+      <div className={`flex h-10 w-10 shrink-0 items-center justify-center rounded-xl sm:h-11 sm:w-11 ${color}`}><Icon size={22} /></div>
       <div className="min-w-0">
         <div className="text-2xl font-bold tabular-nums">{value}</div>
-        <div className="truncate text-xs text-slate-500 dark:text-slate-400">{label}</div>
+        <div className="text-xs leading-snug text-slate-500 dark:text-slate-400">{label}</div>
         {sub && <div className="text-xs text-slate-400">{sub}</div>}
       </div>
     </div>
