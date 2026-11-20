@@ -1,0 +1,13 @@
+services:
+  control-acceso:
+    build: .
+    container_name: control-acceso
+    restart: unless-stopped
+    ports:
+      - "3001:3001"
+    environment:
+      - TZ=America/Santiago
+      - PORT=3001
+    volumes:
+      # base de datos, fotos y respaldos persisten fuera del contenedor
+      - ./server/data:/app/server/data

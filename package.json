@@ -1,0 +1,17 @@
+{
+  "name": "control-acceso",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Sistema de control de acceso 100% local",
+  "workspaces": ["server", "client"],
+  "scripts": {
+    "dev": "concurrently -n API,WEB -c blue,magenta \"npm run dev -w server\" \"npm run dev -w client\"",
+    "build": "npm run build -w client",
+    "start": "npm run build && npm run start -w server",
+    "seed": "npm run seed -w server"
+  },
+  "devDependencies": {
+    "concurrently": "^9.1.0"
+  },
+  "engines": { "node": ">=20" }
+}
